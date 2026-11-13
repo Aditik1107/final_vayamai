@@ -4,10 +4,12 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'apps/mobile/**'
-      - '.github/workflows/build-apk.yml'
+    tags:
+      - 'v*'
   workflow_dispatch: # Allows manual trigger from the GitHub Actions tab
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -81,7 +83,6 @@ jobs:
 
       - name: Create GitHub Release with APK
         uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
         with:
           files: build-output/VyayamAI-Integrated-App.apk
           tag_name: v1.0.0-apk
