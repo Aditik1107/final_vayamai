@@ -39,6 +39,10 @@ apps/mobile/__generated__/
 dist/
 build/
 *.tgz
+*.apk
+*.aab
+local.properties
+apps/mobile/android/local.properties
 
 # ── IDE ───────────────────────────────────────────────────
 .vscode/
