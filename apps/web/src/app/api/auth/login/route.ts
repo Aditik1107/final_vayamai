@@ -46,20 +46,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 2. If an account exists but the email is not verified:
-    // Prevent access and offer to resend the verification email
-    if (!user.isEmailVerified) {
-      return NextResponse.json(
-        {
-          success: false,
-          code: 'EMAIL_NOT_VERIFIED',
-          email: user.email,
-          message: 'Please verify your email address before continuing.',
-        },
-        { status: 403 }
-      )
-    }
-
     // 3. Verify password:
     // If the password is incorrect, display a suitable error without creating an account
     const isValid = await comparePassword(password, user.passwordHash)

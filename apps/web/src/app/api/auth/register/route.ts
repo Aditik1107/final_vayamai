@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
         status: 'ACTIVE',
         approvalStatus: 'APPROVED',
         onboardingCompleted: false,
-        isEmailVerified: false,
+        isEmailVerified: true,
         verificationToken,
         verificationTokenExpires,
       },

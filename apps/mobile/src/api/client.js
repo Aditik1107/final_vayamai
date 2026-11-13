@@ -16,11 +16,8 @@ import { STORAGE_KEYS } from '../utils/helpers';
 // you use a babel plugin (react-native-dotenv / babel-plugin-dotenv).
 // We provide a sensible default for local development.
 const resolveBaseUrl = () => {
-  // If using react-native-dotenv, uncomment and set VYAYAMAI_API_URL in .env:
-  // return process.env.VYAYAMAI_API_URL || 'http://10.0.2.2:5000/api';
-
-  // Default: Android emulator → host machine localhost:5000
-  return 'http://10.0.2.2:5000/api';
+  // Use current LAN IP so physical phones and emulators can reach the backend
+  return 'http://172.17.29.190:5000/api';
 };
 
 const BASE_URL = resolveBaseUrl();
