@@ -1,28 +1,51 @@
 // apps/mobile/src/api/client.js
 // VyayamAI — API client for React Native (Client + Trainer portals)
-//
-// BASE_URL priority:
-//   1. VYAYAMAI_API_URL env var (set in app.config.js or .env via babel-plugin-dotenv)
-//   2. Android emulator default: http://10.0.2.2:5000/api
-//   3. iOS simulator default: http://localhost:5000/api
-//   4. Production: update VYAYAMAI_API_URL to your deployed backend URL
-//
-// For production, set VYAYAMAI_API_URL to e.g. https://your-backend.vercel.app/api
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { STORAGE_KEYS } from '../utils/helpers';
 
-// Resolve base URL — React Native does not have process.env natively unless
-// you use a babel plugin (react-native-dotenv / babel-plugin-dotenv).
-// We provide a sensible default for local development.
-const resolveBaseUrl = () => {
-  // Use current LAN IP so physical phones and emulators can reach the backend
-  return 'http://172.17.29.190:5000/api';
+const STORAGE_SERVER_KEY = 'vyayamai_server_url';
+export const DEFAULT_SERVER_URL = 'http://172.17.29.190:5000/api';
+
+let cachedBaseUrl = DEFAULT_SERVER_URL;
+
+export const getBaseUrl = async () => {
+  try {
+    const saved = await AsyncStorage.getItem(STORAGE_SERVER_KEY);
+    if (saved && saved.trim()) {
+      cachedBaseUrl = saved.trim();
+      return cachedBaseUrl;
+    }
+  } catch (e) {}
+  return cachedBaseUrl;
 };
 
-const BASE_URL = resolveBaseUrl();
+export const setBaseUrl = async (newUrl) => {
+  let clean = (newUrl || '').trim();
+  if (!clean.startsWith('http://') && !clean.startsWith('https://')) {
+    clean = 'http://' + clean;
+  }
+  if (!clean.endsWith('/api')) {
+    clean = clean.replace(/\/+$/, '') + '/api';
+  }
+  cachedBaseUrl = clean;
+  await AsyncStorage.setItem(STORAGE_SERVER_KEY, clean);
+  return clean;
+};
 
-console.log('[API Client] Base URL:', BASE_URL);
+export const testServerConnection = async (targetUrl = null) => {
+  const urlToTest = targetUrl || (await getBaseUrl());
+  const healthUrl = urlToTest.replace(/\/+$/, '') + '/health';
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 4000);
+    const res = await fetch(healthUrl, { method: 'GET', signal: controller.signal });
+    clearTimeout(timeout);
+    return res.ok;
+  } catch (e) {
+    return false;
+  }
+};
 
 let onUnauthorizedCallback = null;
 
@@ -32,6 +55,7 @@ export const setOnUnauthorized = (cb) => {
 
 async function apiRequest(endpoint, method = 'GET', data = null, customHeaders = {}) {
   const token = await AsyncStorage.getItem(STORAGE_KEYS.TOKEN);
+  const baseUrl = await getBaseUrl();
   const headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
@@ -43,7 +67,7 @@ async function apiRequest(endpoint, method = 'GET', data = null, customHeaders =
   }
 
   const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-  const url = endpoint.startsWith('http') ? endpoint : `${BASE_URL}${cleanEndpoint}`;
+  const url = endpoint.startsWith('http') ? endpoint : `${baseUrl}${cleanEndpoint}`;
 
   console.log(`[API Request] ${method} ${url}`);
 
@@ -58,7 +82,7 @@ async function apiRequest(endpoint, method = 'GET', data = null, customHeaders =
 
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 45000);
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
     config.signal = controller.signal;
 
     const response = await fetch(url, config);
@@ -83,9 +107,10 @@ async function apiRequest(endpoint, method = 'GET', data = null, customHeaders =
   } catch (error) {
     console.error(`[API Exception] ${method} ${url} - ${error.message}`);
     if (error.name === 'AbortError') {
-      throw new Error(
-        'Request timed out. Check that the backend is running at ' + BASE_URL
-      );
+      throw new Error(`Connection timed out reaching ${baseUrl}. Verify Wi-Fi network or configure server IP in settings.`);
+    }
+    if (error.message.includes('Network request failed') || error.message.includes('Network Error')) {
+      throw new Error(`Cannot reach server at ${baseUrl}. Ensure your phone is connected to the same Wi-Fi.`);
     }
     throw error;
   }

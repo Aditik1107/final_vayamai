@@ -15,6 +15,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { loginUser } from '../api/authApi';
 import theme, { SIZES, FONTS } from '../constants/theme';
 import { AuthContext } from '../context/AuthContext';
+import ServerConfigModal from '../components/ServerConfigModal';
 
 const LoginScreen = ({ navigation }) => {
   const { login, selectRole } = useContext(AuthContext);
@@ -22,6 +23,7 @@ const LoginScreen = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showConfig, setShowConfig] = useState(false);
 
   const handleLogin = async () => {
     const cleanId = memberId.trim();
@@ -42,6 +44,17 @@ const LoginScreen = ({ navigation }) => {
     }
   };
 
+  const handleEnterDemo = () => {
+    setShowConfig(false);
+    login('demo-token-123', {
+      id: 'demo-user-1',
+      name: 'Aditi Kadam (Demo)',
+      email: 'aditipkadam11@gmail.com',
+      role: 'client',
+      memberId: 'MM-2026-00001',
+    });
+  };
+
   return (
     <KeyboardAvoidingView
       style={[styles.container, { backgroundColor: theme.background }]}
@@ -52,6 +65,11 @@ const LoginScreen = ({ navigation }) => {
           <TouchableOpacity style={styles.roleSwitchBtn} onPress={() => selectRole(null)}>
             <MaterialCommunityIcons name="swap-horizontal" size={16} color={theme.primary} />
             <Text style={[styles.roleSwitchText, { color: theme.primary }]}>Change Role</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.configBtn} onPress={() => setShowConfig(true)}>
+            <MaterialCommunityIcons name="server-network" size={16} color={theme.primary} />
+            <Text style={[styles.configBtnText, { color: theme.primary }]}>Server IP</Text>
           </TouchableOpacity>
         </View>
 
@@ -89,6 +107,10 @@ const LoginScreen = ({ navigation }) => {
             {loading ? <ActivityIndicator color={theme.onPrimary} /> : <Text style={[styles.buttonText, { color: theme.onPrimary }]}>Login</Text>}
           </TouchableOpacity>
 
+          <TouchableOpacity style={styles.demoButton} onPress={handleEnterDemo}>
+            <Text style={[styles.demoButtonText, { color: theme.secondary }]}>Instant Demo Access (Skip Login)</Text>
+          </TouchableOpacity>
+
           <TouchableOpacity onPress={() => navigation.navigate('Register')} style={styles.footerLink}>
             <Text style={[styles.linkText, { color: theme.textSecondary }]}>
               Don't have an account? <Text style={{ color: theme.primary, fontWeight: 'bold' }}>Register</Text>
@@ -96,6 +118,12 @@ const LoginScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      <ServerConfigModal
+        visible={showConfig}
+        onClose={() => setShowConfig(false)}
+        onEnterDemo={handleEnterDemo}
+      />
     </KeyboardAvoidingView>
   );
 };
@@ -103,19 +131,23 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   content: { padding: SIZES.padding, flexGrow: 1, justifyContent: 'center' },
-  topRow: { alignItems: 'flex-start', marginBottom: 20 },
-  roleSwitchBtn: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 12, backgroundColor: 'rgba(232, 232, 64, 0.12)', borderWidth: 1, borderColor: 'rgba(232, 232, 64, 0.3)' },
-  roleSwitchText: { fontSize: 12, fontWeight: 'bold' },
-  header: { fontSize: 36, fontWeight: 'bold' },
-  subHeader: { fontSize: 16, marginBottom: 40 },
-  form: { gap: 20 },
-  label: { fontSize: 12, fontWeight: 'bold', textTransform: 'uppercase' },
-  input: { height: 56, borderWidth: 1, borderRadius: 12, paddingHorizontal: 16, fontSize: 16 },
-  errorText: { fontSize: 14, textAlign: 'center' },
-  button: { height: 56, borderRadius: 12, justifyContent: 'center', alignItems: 'center', marginTop: 20 },
-  buttonText: { fontSize: 18, fontWeight: 'bold' },
+  topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
+  roleSwitchBtn: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 6, paddingHorizontal: 12, borderRadius: 12, backgroundColor: 'rgba(255,255,255,0.05)' },
+  roleSwitchText: { fontSize: 13, fontWeight: '600' },
+  configBtn: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 6, paddingHorizontal: 12, borderRadius: 12, backgroundColor: 'rgba(255,255,255,0.05)' },
+  configBtnText: { fontSize: 13, fontWeight: '600' },
+  header: { fontSize: 32, fontWeight: 'bold', textAlign: 'center', marginBottom: 8 },
+  subHeader: { fontSize: 16, textAlign: 'center', marginBottom: 32 },
+  form: { width: '100%' },
+  label: { fontSize: 14, fontWeight: '600', marginBottom: 8 },
+  input: { height: 48, borderWidth: 1, borderRadius: 12, paddingHorizontal: 16, marginBottom: 16, fontSize: 16 },
+  button: { height: 48, borderRadius: 12, justifyContent: 'center', alignItems: 'center', marginTop: 8 },
+  buttonText: { fontSize: 16, fontWeight: 'bold' },
+  demoButton: { height: 44, borderRadius: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.15)', justifyContent: 'center', alignItems: 'center', marginTop: 12 },
+  demoButtonText: { fontSize: 14, fontWeight: '600' },
+  errorText: { marginBottom: 12, fontSize: 14, textAlign: 'center' },
   footerLink: { marginTop: 24, alignItems: 'center' },
-  linkText: { fontSize: 15 },
+  linkText: { fontSize: 14 },
 });
 
 export default LoginScreen;
