@@ -15,7 +15,10 @@ function executeMockQuery(sql, params = []) {
     // Filter by WHERE
     let filtered = rows;
     if (/WHERE/i.test(cleanSql)) {
-      if (/client_id\s*=\s*\?/i.test(cleanSql)) {
+      if (/member_id\s*=\s*\?\s*OR\s*email\s*=\s*\?/i.test(cleanSql)) {
+        const val = String(params[0]).toLowerCase();
+        filtered = filtered.filter(r => (r.member_id && r.member_id.toLowerCase() === val) || (r.email && r.email.toLowerCase() === val));
+      } else if (/client_id\s*=\s*\?/i.test(cleanSql)) {
         const cId = Number(params[0]);
         filtered = filtered.filter(r => Number(r.client_id) === cId);
       } else if (/user_id\s*=\s*\?/i.test(cleanSql)) {
