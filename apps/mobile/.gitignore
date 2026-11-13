@@ -54,4 +54,7 @@ example
 
 # generated native folders
 /ios
-/android
+# /android (included for automated cloud APK builds)
+/android/app/build/
+/android/build/
+/android/.gradle/

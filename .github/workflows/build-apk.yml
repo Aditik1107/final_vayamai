@@ -6,7 +6,7 @@ on:
       - main
     tags:
       - 'v*'
-  workflow_dispatch: # Allows manual trigger from the GitHub Actions tab
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -26,12 +26,10 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Set up Node.js
+      - name: Set up Node.js 18
         uses: actions/setup-node@v4
         with:
           node-version: 18
-          cache: 'npm'
-          cache-dependency-path: 'apps/mobile/package.json'
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
@@ -41,17 +39,7 @@ jobs:
           cd apps/mobile
           npm install --legacy-peer-deps
 
-      - name: Generate React Native Android Template (if needed)
-        run: |
-          cd apps/mobile
-          if [ ! -d "android" ]; then
-            echo "Generating android native project template..."
-            npx @react-native-community/cli init TempApp --version 0.74.1 --skip-install --npm
-            cp -r TempApp/android ./android
-            rm -rf TempApp
-          fi
-
-      - name: Bundle React Native JavaScript
+      - name: Bundle React Native JavaScript Assets
         run: |
           cd apps/mobile
           mkdir -p android/app/src/main/assets
@@ -68,7 +56,7 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleRelease --no-daemon
 
-      - name: Locate and Rename APK
+      - name: Locate and Prepare APK
         run: |
           mkdir -p build-output
           find apps/mobile/android/app/build/outputs/apk/ -name "*.apk" -exec cp {} build-output/VyayamAI-Integrated-App.apk \;
@@ -81,7 +69,7 @@ jobs:
           path: build-output/VyayamAI-Integrated-App.apk
           retention-days: 30
 
-      - name: Create GitHub Release with APK
+      - name: Create or Update GitHub Release with APK
         uses: softprops/action-gh-release@v2
         with:
           files: build-output/VyayamAI-Integrated-App.apk
