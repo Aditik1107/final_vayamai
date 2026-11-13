@@ -14,8 +14,7 @@ const { getClientProgressSummary } = require('./progressMonitoringService');
 async function getTrainerAutomatedInsights(trainerId) {
   // 1. Fetch all clients
   const [clients] = await db.query(
-    "SELECT id, name, email, member_id, role, created_at FROM users WHERE role = ? ORDER BY id ASC",
-    ['client']
+    "SELECT id, name, email, member_id, role, created_at FROM users WHERE LOWER(role) = 'client' ORDER BY id ASC"
   );
 
   const clientReports = [];
@@ -176,7 +175,24 @@ async function getTrainerAutomatedInsights(trainerId) {
       }
     }
 
-    if (status === 'On Track') onTrackCount++;
+    if (status === 'On Track') {
+      onTrackCount++;
+      if (weightDelta < 0) {
+        alerts.push({
+          id: `alert_progress_${cId}`,
+          client_id: cId,
+          client_name: client.name,
+          member_id: client.member_id,
+          severity: 'positive',
+          type: 'steady_progress',
+          icon: 'trophy',
+          title: `${client.name}: Steady Progress`,
+          message: `${client.name} has maintained a steady downward weight trend (${weightDelta} kg) with ${loggedWorkoutsThisWeek} weekly sessions.`,
+          recommended_action: 'Send Encouragement',
+          action_payload: { actionType: 'send_notification', title: 'Great Progress!', message: 'Keep up the solid consistency!' },
+        });
+      }
+    }
 
     clientReports.push({
       client_id: cId,
