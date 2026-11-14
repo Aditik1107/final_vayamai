@@ -36,6 +36,9 @@ const RoleSelectionScreen = () => {
 
         <View style={styles.header}>
           <Text style={[styles.title, { color: theme.primary }]}>VyayamAI</Text>
+          <View style={{ alignSelf: 'center', backgroundColor: '#22c55e22', paddingHorizontal: 10, paddingVertical: 3, borderRadius: 12, marginTop: 4, marginBottom: 8, borderWidth: 1, borderColor: '#22c55e55' }}>
+            <Text style={{ color: '#22c55e', fontSize: 12, fontWeight: 'bold' }}>v2.0.0 • Updated Build</Text>
+          </View>
           <Text style={[styles.subtitle, { color: theme.textSecondary }]}>
             Select your portal to proceed
           </Text>

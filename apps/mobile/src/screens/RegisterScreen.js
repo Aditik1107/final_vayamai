@@ -121,8 +121,8 @@ const RegisterScreen = ({ navigation }) => {
             />
           </View>
 
-          <View style={styles.row}>
-            <View style={[styles.fieldGroup, { flex: 1 }]}>
+          <View style={[styles.row, { marginBottom: 16 }]}>
+            <View style={{ flex: 1 }}>
               <Text style={[styles.label, { color: theme.heading }]}>Age</Text>
               <TextInput
                 style={[styles.input, { backgroundColor: theme.surface, borderColor: theme.border, color: theme.textPrimary }]}
@@ -133,7 +133,7 @@ const RegisterScreen = ({ navigation }) => {
                 placeholderTextColor={theme.muted}
               />
             </View>
-            <View style={[styles.fieldGroup, { flex: 1, marginLeft: 16 }]}>
+            <View style={{ flex: 1, marginLeft: 16 }}>
               <Text style={[styles.label, { color: theme.heading }]}>Gender</Text>
               <View style={styles.pickerRow}>
                 <PickerOption label="M" value="male" activeValue={gender} onPress={setGender} />
@@ -142,8 +142,8 @@ const RegisterScreen = ({ navigation }) => {
             </View>
           </View>
 
-          <View style={styles.row}>
-            <View style={[styles.fieldGroup, { flex: 1 }]}>
+          <View style={[styles.row, { marginBottom: 16 }]}>
+            <View style={{ flex: 1 }}>
               <Text style={[styles.label, { color: theme.heading }]}>Height (cm)</Text>
               <TextInput
                 style={[styles.input, { backgroundColor: theme.surface, borderColor: theme.border, color: theme.textPrimary }]}
@@ -154,7 +154,7 @@ const RegisterScreen = ({ navigation }) => {
                 placeholderTextColor={theme.muted}
               />
             </View>
-            <View style={[styles.fieldGroup, { flex: 1, marginLeft: 16 }]}>
+            <View style={{ flex: 1, marginLeft: 16 }}>
               <Text style={[styles.label, { color: theme.heading }]}>Weight (kg)</Text>
               <TextInput
                 style={[styles.input, { backgroundColor: theme.surface, borderColor: theme.border, color: theme.textPrimary }]}
