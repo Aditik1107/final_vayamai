@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { STORAGE_KEYS } from '../utils/helpers';
 
 const STORAGE_SERVER_KEY = 'vyayamai_server_url';
-export const DEFAULT_SERVER_URL = 'http://172.17.29.190:5000/api';
+export const DEFAULT_SERVER_URL = 'http://10.114.189.190:5000/api';
 
 let cachedBaseUrl = DEFAULT_SERVER_URL;
 
