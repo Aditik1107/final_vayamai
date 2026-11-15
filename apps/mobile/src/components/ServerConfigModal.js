@@ -73,7 +73,7 @@ const ServerConfigModal = ({ visible, onClose, onEnterDemo }) => {
               setUrl(t);
               setTestResult(null);
             }}
-            placeholder="http://172.17.29.190:5000/api"
+            placeholder="http://10.114.189.190:5000/api"
             placeholderTextColor={theme.muted}
             autoCapitalize="none"
             autoCorrect={false}
@@ -127,7 +127,7 @@ const ServerConfigModal = ({ visible, onClose, onEnterDemo }) => {
           ) : null}
 
           <TouchableOpacity style={styles.resetBtn} onPress={handleReset}>
-            <Text style={[styles.resetText, { color: theme.muted }]}>Reset to Default (172.17.29.190)</Text>
+            <Text style={[styles.resetText, { color: theme.muted }]}>Reset to Default ({DEFAULT_SERVER_URL})</Text>
           </TouchableOpacity>
         </View>
       </View>

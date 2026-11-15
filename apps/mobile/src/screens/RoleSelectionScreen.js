@@ -13,10 +13,11 @@ const RoleSelectionScreen = () => {
   const handleEnterDemo = () => {
     setShowConfig(false);
     login('demo-token-123', {
-      id: 'demo-user-1',
-      name: 'Aditi Kadam (Demo)',
+      id: 7,
+      name: 'Aditi Prakash Kadam (Demo)',
       email: 'aditipkadam11@gmail.com',
       role: 'client',
+      member_id: 'MM-2026-00001',
       memberId: 'MM-2026-00001',
     });
   };
@@ -37,7 +38,7 @@ const RoleSelectionScreen = () => {
         <View style={styles.header}>
           <Text style={[styles.title, { color: theme.primary }]}>VyayamAI</Text>
           <View style={{ alignSelf: 'center', backgroundColor: '#22c55e22', paddingHorizontal: 10, paddingVertical: 3, borderRadius: 12, marginTop: 4, marginBottom: 8, borderWidth: 1, borderColor: '#22c55e55' }}>
-            <Text style={{ color: '#22c55e', fontSize: 12, fontWeight: 'bold' }}>v2.0.0 • Updated Build</Text>
+            <Text style={{ color: '#22c55e', fontSize: 12, fontWeight: 'bold' }}>v3.1.0 • Instant Demo & Clean Forms</Text>
           </View>
           <Text style={[styles.subtitle, { color: theme.textSecondary }]}>
             Select your portal to proceed

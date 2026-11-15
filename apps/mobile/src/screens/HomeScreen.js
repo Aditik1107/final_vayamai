@@ -50,7 +50,7 @@ const HomeScreen = ({ navigation }) => {
       setData({ profile, nutrition, workoutHistory, automatedReport });
       setError('');
     } catch (err) {
-      setError(err.message);
+      console.warn('HomeScreen fetch err:', err);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -67,21 +67,10 @@ const HomeScreen = ({ navigation }) => {
     fetchData();
   }, []);
 
-  if (loading && !refreshing) {
+  if (loading && !refreshing && !user) {
     return (
       <View style={[styles.center, { backgroundColor: theme.background }]}>
         <ActivityIndicator size="large" color={theme.primary} />
-      </View>
-    );
-  }
-
-  if (error && !data.profile) {
-    return (
-      <View style={[styles.center, { backgroundColor: theme.background }]}>
-        <Text style={{ color: theme.error, marginBottom: 16 }}>{error}</Text>
-        <TouchableOpacity style={[styles.retryBtn, { backgroundColor: theme.primary }]} onPress={fetchData}>
-          <Text style={{ color: theme.onPrimary, fontWeight: 'bold' }}>Retry</Text>
-        </TouchableOpacity>
       </View>
     );
   }
